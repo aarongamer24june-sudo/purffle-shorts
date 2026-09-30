@@ -6,8 +6,23 @@ on:
     - cron: "30 3 * * *"
 
 jobs:
-  test-generation:
+  generate-short:
     runs-on: ubuntu-latest
+
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      LLM_PROVIDER: gemini
+      LLM_MODEL: gemini-2.5-flash
+      VISUAL_SOURCES: pollinations
+      TTS_ENGINE: edge
+      LANGUAGE: en
+      NICHES: mind-blowing science facts,unsolved mysteries,space and the universe,psychology tricks,dark history
+      TOPIC_SOURCES: niche
+      SCRIPT_STYLE: facts
+      TARGET_SECONDS: 40
+      CAPTION_STYLE: neon
+      COLOR_GRADE: vivid
+      SYNTHETIC_MEDIA: true
 
     steps:
       - name: Checkout
@@ -26,11 +41,16 @@ jobs:
       - name: Install PurffleShorts
         run: pip install -e .
 
-      - name: Generate test Short
-        run: python -m purffle_shorts demo
+      - name: Generate AI Short
+        run: |
+          python -m purffle_shorts make \
+            --source niche \
+            --visuals pollinations \
+            --count 1 \
+            --no-upload
 
-      - name: Save generated video
+      - name: Save generated Short
         uses: actions/upload-artifact@v4
         with:
-          name: generated-short
+          name: ai-short
           path: output_videos/
