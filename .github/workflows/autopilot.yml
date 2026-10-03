@@ -12,7 +12,7 @@ jobs:
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       LLM_PROVIDER: gemini
-      LLM_MODEL: gemini-2.5-flash
+      LLM_MODEL: gemini-3.8-flash
       VISUAL_SOURCES: pollinations
       TTS_ENGINE: edge
       LANGUAGE: en
