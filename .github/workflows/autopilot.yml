@@ -39,18 +39,26 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Install PurffleShorts
-        run: pip install -e .
+        run: pip install -e 
+                - name: Generate AI Short
+          run: |
+            for attempt in 1 2 3 4 5; do
+              echo "Attempt $attempt/5"
+              
+              if python -m purffle_shorts make \
+                --source niche \
+                --visuals pollinations \
+                --count 1 \
+                --no-upload; then
+                echo "✅ Short generated successfully!"
+                exit 0
+              fi
 
-      - name: Generate AI Short
-        run: |
-          python -m purffle_shorts make \
-            --source niche \
-            --visuals pollinations \
-            --count 1 \
-            --no-upload
+              if [ "$attempt" -lt 5 ]; then
+                echo "⚠️ Generation failed. Retrying in 60 seconds..."
+                sleep 60
+              fi
+            done
 
-      - name: Save generated Short
-        uses: actions/upload-artifact@v4
-        with:
-          name: ai-short
-          path: output_videos/
+            echo "❌ All 5 attempts failed."
+            exit 1
